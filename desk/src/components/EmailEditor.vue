@@ -234,6 +234,7 @@ import SavedReplyActions from "@/components/SavedReplyActions/SavedReplyActions.
 import { useTyping } from "@/composables/realtime";
 import { getUserEmailInfo } from "@/composables/useUserEmailInfo";
 import { useUploadTracker } from "@/composables/useUploadTracker";
+import { syncDefaultRecipients } from "@/utils/emailRecipients";
 import { replyComposer } from "@/pages/ticket/modalStates";
 import { useAuthStore } from "@/stores/auth";
 import { useUserStore } from "@/stores/user";
@@ -359,6 +360,12 @@ function onQuotedInput() {
 }
 
 const toEmailsClone = ref([...props.toEmails]);
+watch(
+  () => [...props.toEmails],
+  (next, previous) => {
+    toEmailsClone.value = syncDefaultRecipients(toEmailsClone.value, previous, next);
+  }
+);
 const ccEmailsClone = ref([...props.ccEmails]);
 const bccEmailsClone = ref([...props.bccEmails]);
 const showCC = ref(false);
